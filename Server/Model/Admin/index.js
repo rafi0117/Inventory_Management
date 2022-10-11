@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 let adminSchema = new mongoose.Schema({
   name: {
     type: String,

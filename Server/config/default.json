@@ -1,15 +1,14 @@
 {
-    "URL": "http://172.31.208.77:5000",
-    "PORT": 5000,
-    "PRIVATE_KEY":"codeforindia",
-    "EMAIL_SMTP": {
-      "HOST": "mail.csmafia.com",
-      "AUTH": {
-        "USER": "cfi@csmafia.com",
-        "PASSWORD": "codeforindiaFTW"
-      },
-      "PORT": 465
-    }
-  }
-  
-  
+  "URL": "http://192.168.68.74:5000",
+  "PORT": 5000,
+  "PRIVATE_KEY": "codeforindia",
+  "EMAIL_SMTP": {
+    "HOST": "mail.csmafia.com",
+    "AUTH": {
+      "USER": "cfi@csmafia.com",
+      "PASSWORD": "codeforindiaFTW"
+    },
+    "PORT": 465
+  },
+  "DB_URI" : "mongodb+srv://m001-majid:m001-mongodb-basics@sandbox.hbdszhd.mongodb.net/Inventory_Management"
+}

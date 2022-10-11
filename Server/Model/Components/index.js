@@ -1,27 +1,23 @@
 import mongoose from "mongoose";
+
 let componentSchema = new mongoose.Schema({
-    title: {
+    componentName: {
         type: String,
         required: true,
     },
-    id: {
-        type: String,
-        unique: true,
-        required: true
+    total: {
+        type: Number,
+        required: true,
     },
-    Quantity: {
+    available: {
+        type: Number,
+        required: true,
+    },
+    source: {
         type: String,
         required: true,
     },
-    coverImagrUrl: {
-        type: String,
-        required: true,
-    },
-    Source: {
-        type: String,
-        required: true,
-    },
-    synopsis: {
+    description: {
         type: String,
         required: true,
     },

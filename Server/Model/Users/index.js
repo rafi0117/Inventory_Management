@@ -32,6 +32,11 @@ let userSchema = new mongoose.Schema({
     role: {
         type: String,
         default: "user"
+    },
+    campuslead: {
+        type : Boolean,
+        required : true
     }
 });
+
 export default mongoose.model("User", userSchema, "user");

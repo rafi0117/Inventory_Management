@@ -2,6 +2,8 @@ import express from "express";
 import config from "config";
 import "./Utils/DBconnect/index.js";
 
+import UserRoutes from "./Controllers/User/index.js";
+import RootRoutes from "./Controllers/Root/index.js";
 
 const app = express();
 const port = config.get("PORT");
@@ -13,6 +15,8 @@ app.get("/", (req, res) => {
     res.send("This is Inventory Management System API Backend")
 })
 
+app.use("/api/user", UserRoutes);
+app.use("/api", RootRoutes);
 
 app.listen(port, () => {
     console.log("Server Started at Port : ", port);
