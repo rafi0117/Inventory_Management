@@ -8,7 +8,7 @@ import randomString from "../../Utils/Randomstring/index.js";
 //Import Models
 import Users from "../../Model/Users/index.js";
 import Admin from "../../Model/Admin/index.js";
-import Components from "../../Model/Components/index.js";
+import components from "../../Model/Components/index.js";
 
 // Import Validations
 import { loginValidation, userRegisterValidatorRules, errorMiddleware, componentValidation  } from "../../Middlewares/Validation/index.js";
@@ -21,10 +21,6 @@ import authMiddleware from "../../Middlewares/Auth/verifyToken.js";
 // ----------------------------------------------------------------
 
 const router = express.Router();
-
-
-// ----------------------------------------------------------------
-// ----------------------------------------------------------------
 
 // -------------------SignUp Route--------------------------------
 /*
@@ -108,33 +104,43 @@ router.post("/login", loginValidation(), errorMiddleware, async (req, res) => {
     }
 })
 
-router.post("/components", componentValidation(), errorMiddleware, async (req, res) => {
-    try {
-        const payload = req.payload;
-        console.log(payload);
-        if (!payload) {
-            return res.status(401).json({ error : "Unauthorised Access "})
-        }
+// router.post("/components", componentValidation(), errorMiddleware, async (req, res) => {
+//     try {
+//         // const payload = req.payload;
+//         // console.log(payload);
+//         // if (!payload) {
+//         //     return res.status(401).json({ error : "Unauthorised Access "})
+//         // }
 
-        let {
-            componentName,
-            total,
-            available,
-            source,
-            description,
-            buyingPrice,
-            sellingPrice,
-            date
-        } = req.body;
+//         let token = req.headers["auth-token"];
+//         if (!token) {
+//             return res.status(401).json({ error: "Unauthorized Access" });
+//         }
+//         const payload = jwt.verify(token, "codeforindia");
+//         // console.log(payload);
+//         if (!payload) {
+//             return res.status(401).json({ error: "Unauthorized Access" });
+//         }
 
-        const Components = new components(req.body);
-        await Components.save();
-        res.status(200).json({ success: "Component was Added "});
-    } 
-    catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: "Internal Server Error"})
-    }
-})
+//         let {
+//             componentName,
+//             total,
+//             available,
+//             source,
+//             description,
+//             buyingPrice,
+//             sellingPrice,
+//             date
+//         } = req.body;
+
+//         const Component = new components(req.body);
+//         await Component.save();
+//         res.status(200).json({ success: "Component was Added "});
+//     } 
+//     catch (error) {
+//         console.error(error);
+//         return res.status(500).json({ error: "Internal Server Error"})
+//     }
+// })
 
 export default router;
