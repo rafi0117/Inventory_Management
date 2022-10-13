@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 
 let componentSchema = new mongoose.Schema({
+    user_id: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    }],
     componentName: {
         type: String,
         required: true,

@@ -51,7 +51,7 @@ router.post("/login", loginValidation(), errorMiddleware, async (req, res) => {
 });
 
 
-router.post("/components", componentValidation(), errorMiddleware, authMiddleware, async (req, res) => {
+router.post("/addComponents", componentValidation(), errorMiddleware, authMiddleware, async (req, res) => {
     try {
         // const payload = req.payload;
         // console.log(payload);
@@ -70,6 +70,7 @@ router.post("/components", componentValidation(), errorMiddleware, authMiddlewar
         }
 
         let {
+            user_id,
             componentName,
             total,
             available,
@@ -84,6 +85,7 @@ router.post("/components", componentValidation(), errorMiddleware, authMiddlewar
         console.log(userFound);
 
         let component_data = {
+            user_id,
             componentName,
             total,
             available,
@@ -105,7 +107,23 @@ router.post("/components", componentValidation(), errorMiddleware, authMiddlewar
     }
 });
 
+// router.put("/editComponents", componentValidation(), errorMiddleware, authMiddleware, async (req, res) => {
+//     try {
+//         let token = req.headers["auth-token"];
+//         if (!token) {
+//             return res.status(401).json({ error: "Unauthorized Access" });
+//         }
+//         const payload = jwt.verify(token, "codeforindia");
+//         // console.log(payload);
+//         if (!payload) {
+//             return res.status(401).json({ error: "Unauthorized Access" });
+//         }
 
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error : "Internal Server Error" });
+//     }
+// })
 
 router.get("/components", async (req, res) => {
     try {

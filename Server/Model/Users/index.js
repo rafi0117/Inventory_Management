@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 let userSchema = new mongoose.Schema({
+    
     firstname: {
         type: String,
         maxlength: 25,
