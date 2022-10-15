@@ -104,19 +104,19 @@ router.post("/login", loginValidation(), errorMiddleware, async (req, res) => {
     }
 })
 
-router.post("/:user_id", errorMiddleware, async (req, res) => {
-    try {
-        let user_id = req.params.user_id;
-        // console.log(req.params);
-        const componentData = await components.find({ user:  { "$all": [user_id]}})
-        console.log(componentData);
-        res.status(401).json({ success : "Component Added" })
+// router.post("/:user_id", errorMiddleware, async (req, res) => {
+//     try {
+//         let user_id = req.params.user_id;
+//         // console.log(req.params);
+//         const componentData = await components.find({ user:  { "$all": [user_id]}})
+//         console.log(componentData);
+//         res.status(401).json({ success : "Component Added" })
 
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error : "Internal Server Error" })
-    }
-})
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error : "Internal Server Error" })
+//     }
+// })
 
 // router.post("/components", componentValidation(), errorMiddleware, async (req, res) => {
 //     try {

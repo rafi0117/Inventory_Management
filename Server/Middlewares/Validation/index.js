@@ -41,6 +41,14 @@ function componentValidation() {
     ]
 }
 
+function componentEditValidation()  {
+    return [
+        body("componentName", "Component name is required").isString({ min : 2 }),
+        body("total", "Total is Required").notEmpty({ min : 2 }),
+        body("available", "Available is Required").notEmpty({ min : 2 }),
+    ]
+}
+
 function errorMiddleware(req, res, next) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -53,5 +61,6 @@ export {
     loginValidation,
     userRegisterValidatorRules,
     componentValidation,
+    componentEditValidation,
     errorMiddleware
 }
