@@ -2,8 +2,11 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import config from "config";
+import multer from "multer";
 
 import randomString from "../../Utils/Randomstring/index.js";
+
+import imageModel from "../../image.model.js";
 
 import generateToken from "../../Middlewares/Auth/generateToken.js";
 
@@ -12,7 +15,7 @@ import Users from "../../Model/Users/index.js";
 import components from "../../Model/Components/index.js";
 
 import authMiddleware from "../../Middlewares/Auth/verifyToken.js";
-import { userRegisterValidatorRules, loginValidation, errorMiddleware, componentValidation, componentEditValidation } from "../../Middlewares/Validation/index.js";
+import { loginValidation, errorMiddleware, componentValidation, componentEditValidation } from "../../Middlewares/Validation/index.js";
 
 const router = express.Router();
 
@@ -159,6 +162,40 @@ router.put("/:editComponents", componentEditValidation(), errorMiddleware, authM
     }
 })
 
+// Storage
+const Storage = multer.diskStorage({
+    destination : (req, file, cb) => {
+        cb(null, "./uploads" )
+    },
+    filename : (req, file, cb) => {
+        cb(null, Date.now() + "--" + file.originalname)
+    },
+});
+
+const upload = multer({
+    storage : Storage
+})
+console.log(upload);
+
+router.post("/upload", upload.single("testImage"), async  (req, res) => {
+    try {
+        const newImage = new imageModel({
+            name : req.body.name,
+            image : {
+                    // filename : "arduino",
+                    data : req.file.filename,
+                    contentType : "image/jpg"
+            }
+        })
+        console.log(req.file);
+        await newImage.save()
+        res.status(200).json({ success : "Successfully Uploaded"});
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error : "Internal Server Error" })
+    }
+})
+
 router.get("/components", async (req, res) => {
     try {
         let component_data = await components.find({})
@@ -170,4 +207,4 @@ router.get("/components", async (req, res) => {
     }
 })
 
-export default router;
+export default router; 
