@@ -22,5 +22,5 @@ app.use("/api/root", RootRoutes);
 
 
 app.listen(port, () => {
-    console.log("Server Started at Port : ", port);
+    console.log("Server Started at Port :", port);
 })

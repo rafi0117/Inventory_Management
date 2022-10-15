@@ -1,24 +1,21 @@
 import express from "express";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import config from "config";
 
 import randomString from "../../Utils/Randomstring/index.js";
+import sendEmail from "../../Utils/sendMail.js"; 
 
 //Import Models
-import Users from "../../Model/Users/index.js";
-import Admin from "../../Model/Admin/index.js";
-import components from "../../Model/Components/index.js";
+import userModel from "../../Model/Users/index.js";
 
 // Import Validations
 import { loginValidation, userRegisterValidatorRules, errorMiddleware, componentValidation  } from "../../Middlewares/Validation/index.js";
 
 // Import generate token
 import generateToken from "../../Middlewares/Auth/generateToken.js";
-import authMiddleware from "../../Middlewares/Auth/verifyToken.js";
+import Components from "../../Model/Components/index.js";
+// import authMiddleware from "../../Middlewares/Auth/verifyToken.js";
 
-
-// ----------------------------------------------------------------
 
 const router = express.Router();
 
@@ -36,39 +33,91 @@ Validation :
 
 */
 
-
-router.post("/SignUp", userRegisterValidatorRules(), errorMiddleware, async (req, res) => {
+router.post("/signup", userRegisterValidatorRules(), errorMiddleware, async (req, res) => {
 
     try {
 
-        let { firstname, lastname, email, password } = req.body;
+        let { firstname, lastname, email, password, password2 } = req.body;
         // console.log(req.body);
         //Avoid Double Registration
 
-        let userData = await Users.findOne({ email });
-        if (userData) {
-            return res.status(409).json({ "error": "Email Already Registered" })
+        if (!firstname || !lastname || !email || !password || !password2) {
+            return res.status(400).json({ "error" : "Some Fields are Missing" })
+        }
+        if (password !== password2) {
+            return res.status(400).json({ "error" : "Passwords do not match" })
         }
 
-        userData = await Admin.findOne({ email });
-        if (userData) {
-            return res.status(409).json({ "error": "Email Already Registered" })
+        let gotMail = await userModel.findOne({ email })
+        if (gotMail) {
+            return res.status(409).json({ error : "Email Already Registered. Please Login to continue" })
         }
+
+        // let userData = await Users.findOne({ email });
+        // if (userData) {
+        //     return res.status(409).json({ "error": "Email Already Registered" })
+        // }
+
+        // userData = await Admin.findOne({ email });
+        // if (userData) {
+        //     return res.status(409).json({ "error": "Email Already Registered" })
+        // }
 
         req.body.password = await bcrypt.hash(password, 12);
 
-        const user = new Users(req.body);
+        let userData = req.body
+        
+        let emailToken = randomString(10)
 
-        user.userverifytoken = randomString(15);
-        await user.save();
+        userData.userverifytoken = emailToken
 
-        res.status(200).json({ "success": "User Registered Successfully" })
+        const allusers = new userModel(userData)
+
+        await allusers.save();
+
+        // const allcomponents = new Components();
+
+        // await allcomponents.save();
+
+        await sendEmail ({
+            subject : "EdVenture Park Hardware Lab Register",
+            to : userData.email,
+            html : `<p>Hi ${userData.firstname}, <br>
+                        Please click on this link to verify. <b> ${config.get("URL")}/user/verify/email/${emailToken}</b></p>`
+        })
+
+        // user.userverifytoken = randomString(15);
+        // await user.save();
+
+        res.status(200).json({ "success": "User Signed Up Successfully" })
 
     } catch (error) {
         console.error(error);
         res.status(500).json({ "error": "Internal Server Error" })
     }
 });
+
+router.get("/verify/email/:emailtoken", async (req, res) => {
+    try {
+        let emailToken = req.params.emailtoken;
+        console.log(emailToken);
+
+        let userFound = await userModel.findOne({ "userverifytoken.email": emailToken });
+        console.log(userFound);
+
+        if (userFound.userverified.email == true) {
+            return res.status(200).json({ success : "Email already verified" });
+        }
+
+        userFound.userverified.email = true;
+        await userFound.save();
+
+        res.status(200).json({ success : "Email is Verified" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error : "Internal Server Error" })
+    }
+})
 
 router.post("/login", loginValidation(), errorMiddleware, async (req, res) => {
     try {
@@ -118,43 +167,6 @@ router.post("/login", loginValidation(), errorMiddleware, async (req, res) => {
 //     }
 // })
 
-// router.post("/components", componentValidation(), errorMiddleware, async (req, res) => {
-//     try {
-//         // const payload = req.payload;
-//         // console.log(payload);
-//         // if (!payload) {
-//         //     return res.status(401).json({ error : "Unauthorised Access "})
-//         // }
 
-//         let token = req.headers["auth-token"];
-//         if (!token) {
-//             return res.status(401).json({ error: "Unauthorized Access" });
-//         }
-//         const payload = jwt.verify(token, "codeforindia");
-//         // console.log(payload);
-//         if (!payload) {
-//             return res.status(401).json({ error: "Unauthorized Access" });
-//         }
-
-//         let {
-//             componentName,
-//             total,
-//             available,
-//             source,
-//             description,
-//             buyingPrice,
-//             sellingPrice,
-//             date
-//         } = req.body;
-
-//         const Component = new components(req.body);
-//         await Component.save();
-//         res.status(200).json({ success: "Component was Added "});
-//     } 
-//     catch (error) {
-//         console.error(error);
-//         return res.status(500).json({ error: "Internal Server Error"})
-//     }
-// })
 
 export default router;

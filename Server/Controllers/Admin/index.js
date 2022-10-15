@@ -54,7 +54,7 @@ router.post("/login", loginValidation(), errorMiddleware, async (req, res) => {
 });
 
 
-router.post("/addComponents", componentValidation(), errorMiddleware, authMiddleware, async (req, res) => {
+router.post("/addcomponents", componentValidation(), errorMiddleware, authMiddleware, async (req, res) => {
     try {
         // const payload = req.payload;
         // console.log(payload);
@@ -116,7 +116,7 @@ PRIVATE
 res: components are displayed
 */
 
-router.put("/:editComponents", componentEditValidation(), errorMiddleware, authMiddleware, async (req, res) => {
+router.put("/:editcomponents", componentEditValidation(), errorMiddleware, authMiddleware, async (req, res) => {
     try {
         console.log("hello");
 
