@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 let userSchema = new mongoose.Schema({
-    
+
     firstname: {
         type: String,
         maxlength: 25,
@@ -23,21 +23,25 @@ let userSchema = new mongoose.Schema({
         required: true,
     },
     userverified: {
-        type: Boolean,
-        default: false
+        email: {
+            type: Boolean,
+            default: false, 
+        },
     },
     userverifytoken: {
-        type: String,
-        required: true
+        email: {
+            type: String,
+            required: true,
+        },
     },
     role: {
         type: String,
         default: "user"
     },
     campuslead: {
-        type : Boolean,
-        required : true
-    }
+        type: Boolean,
+        required: true
+    },
 });
 
 const userModel = new mongoose.model("user", userSchema, "user");

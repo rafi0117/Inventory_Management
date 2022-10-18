@@ -9,11 +9,10 @@ import sendEmail from "../../Utils/sendMail.js";
 import userModel from "../../Model/Users/index.js";
 
 // Import Validations
-import { loginValidation, userRegisterValidatorRules, errorMiddleware, componentValidation  } from "../../Middlewares/Validation/index.js";
+import { loginValidation, userRegisterValidatorRules, errorMiddleware } from "../../Middlewares/Validation/index.js";
 
 // Import generate token
 import generateToken from "../../Middlewares/Auth/generateToken.js";
-import Components from "../../Model/Components/index.js";
 // import authMiddleware from "../../Middlewares/Auth/verifyToken.js";
 
 
@@ -65,11 +64,14 @@ router.post("/signup", userRegisterValidatorRules(), errorMiddleware, async (req
 
         req.body.password = await bcrypt.hash(password, 12);
 
-        let userData = req.body
+        let userData = req.body;
+        console.log(userData);
+
+        userData.userverified = {  email: false }
         
         let emailToken = randomString(10)
 
-        userData.userverifytoken = emailToken
+        userData.userverifytoken = { emailToken }
 
         const allusers = new userModel(userData)
 
@@ -83,7 +85,7 @@ router.post("/signup", userRegisterValidatorRules(), errorMiddleware, async (req
             subject : "EdVenture Park Hardware Lab Register",
             to : userData.email,
             html : `<p>Hi ${userData.firstname}, <br>
-                        Please click on this link to verify. <b> ${config.get("URL")}/user/verify/email/${emailToken}</b></p>`
+                        Please click on this link to verify. <b> ${config.get("URL")}/api/user/verify/email/${emailToken}</b></p>`
         })
 
         // user.userverifytoken = randomString(15);
@@ -99,11 +101,13 @@ router.post("/signup", userRegisterValidatorRules(), errorMiddleware, async (req
 
 router.get("/verify/email/:emailtoken", async (req, res) => {
     try {
+        console.log("HIT");
+        // res.status(200).json({ success : "Router is Up"})
         let emailToken = req.params.emailtoken;
         console.log(emailToken);
 
-        let userFound = await userModel.findOne({ "userverifytoken.email": emailToken });
-        console.log(userFound);
+        let userFound = await userModel.findOne({ "userverifytoken.email" : emailToken });
+        console.log(userFound)
 
         if (userFound.userverified.email == true) {
             return res.status(200).json({ success : "Email already verified" });
@@ -117,7 +121,7 @@ router.get("/verify/email/:emailtoken", async (req, res) => {
         console.error(error);
         res.status(500).json({ error : "Internal Server Error" })
     }
-})
+});
 
 router.post("/login", loginValidation(), errorMiddleware, async (req, res) => {
     try {
@@ -151,7 +155,7 @@ router.post("/login", loginValidation(), errorMiddleware, async (req, res) => {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' })
     }
-})
+});
 
 // router.post("/:user_id", errorMiddleware, async (req, res) => {
 //     try {
