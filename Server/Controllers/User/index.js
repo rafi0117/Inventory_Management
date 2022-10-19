@@ -1,4 +1,4 @@
-import express from "express";
+import express, { application } from "express";
 import bcrypt from "bcrypt";
 import config from "config";
 
@@ -71,7 +71,7 @@ router.post("/signup", userRegisterValidatorRules(), errorMiddleware, async (req
         
         let emailToken = randomString(10)
 
-        userData.userverifytoken = { emailToken }
+        userData.userverifytoken = {email: emailToken }
 
         const allusers = new userModel(userData)
 
@@ -171,6 +171,11 @@ router.post("/login", loginValidation(), errorMiddleware, async (req, res) => {
 //     }
 // })
 
+app.post("/razorpay", async (req, res) => {
+    const payment_capture = 1;
+    const amount = 499;
+    const currency = "INR";
+})
 
 
 export default router;
