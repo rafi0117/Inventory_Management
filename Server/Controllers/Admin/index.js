@@ -72,7 +72,7 @@ router.post("/addcomponents", componentValidation(), errorMiddleware, authMiddle
         }
 
         let {
-            user_id,
+            // user_id,
             componentName,
             total,
             available,
@@ -87,7 +87,7 @@ router.post("/addcomponents", componentValidation(), errorMiddleware, authMiddle
         console.log(userFound);
 
         let component_data = {
-            user_id,
+            // user_id,
             componentName,
             total,
             available,
