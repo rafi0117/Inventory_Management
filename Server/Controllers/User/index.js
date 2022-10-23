@@ -171,11 +171,7 @@ router.post("/login", loginValidation(), errorMiddleware, async (req, res) => {
 //     }
 // })
 
-// app.post("/razorpay", async (req, res) => {
-//     const payment_capture = 1;
-//     const amount = 499;
-//     const currency = "INR";
-// })
+router.put("/lend", )
 
 
 export default router;
